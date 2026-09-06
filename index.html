@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pautang 1k</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #e9ecef;
+            font-family: Arial, Helvetica, sans-serif;
+            overflow: hidden;
+            user-select: none;
+            position: relative;
+        }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('bg.jpg') no-repeat center center / cover;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        body.show-bg .bg-overlay {
+            opacity: 1;
+        }
+
+        .container {
+            text-align: center;
+            background: #ffffff;
+            padding: 35px 28px;
+            border-radius: 16px;
+            box-shadow: 0 16px 35px rgba(0, 0, 0, 0.18);
+            max-width: 480px;
+            width: 90%;
+            position: relative;
+            z-index: 10;
+            border: 2px dashed #b0bec5;
+            transition: all 0.4s ease;
+        }
+
+        body.show-bg .container {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #d32f2f;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5);
+        }
+
+        .notice-tag {
+            display: inline-block;
+            background: #f1f3f5;
+            color: #495057;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            padding: 5px 12px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            border: 1px solid #ced4da;
+        }
+
+        h1 {
+            color: #212529;
+            font-size: 21px;
+            margin-bottom: 20px;
+            line-height: 1.4;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .terms-box {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin-bottom: 25px;
+            border: 1px solid #e9ecef;
+            text-align: left;
+            font-size: 13px;
+            color: #495057;
+            line-height: 1.8;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .term-row {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dotted #dee2e6;
+            padding: 3px 0;
+        }
+
+        .term-row:last-child {
+            border-bottom: none;
+        }
+
+        .term-label {
+            color: #6c757d;
+        }
+
+        .term-val {
+            font-weight: bold;
+            color: #212529;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            min-height: 55px;
+        }
+
+        button {
+            padding: 13px 32px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            outline: none;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+            transition: background-color 0.2s, transform 0.15s ease;
+        }
+
+        #yesBtn {
+            background-color: #007dfe;
+            color: #ffffff;
+        }
+
+        #yesBtn:hover {
+            background-color: #0062cc;
+            transform: scale(1.05);
+        }
+
+        #noBtn {
+            background-color: #dc3545;
+            color: #ffffff;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            transition: left 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), top 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .blocked-screen {
+            display: none;
+            animation: popIn 0.35s ease-out;
+        }
+
+        .blocked-icon {
+            width: 60px;
+            height: 60px;
+            background-color: #ffebee;
+            color: #d32f2f;
+            border: 2px solid #ef5350;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 32px;
+            font-weight: 900;
+            margin: 0 auto 16px;
+        }
+
+        .blocked-title {
+            color: #d32f2f;
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .blocked-desc {
+            color: #495057;
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .blocked-info {
+            background: #fff5f5;
+            border: 1px solid #ffcdd2;
+            border-radius: 8px;
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 13px;
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .blocked-row {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dotted #ef9a9a;
+            padding: 3px 0;
+        }
+
+        .blocked-row:last-child {
+            border-bottom: none;
+        }
+
+        .blocked-label {
+            color: #b71c1c;
+            font-weight: bold;
+        }
+
+        .disabled-btn {
+            background-color: #adb5bd;
+            color: #ffffff;
+            cursor: not-allowed;
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: none;
+            font-weight: bold;
+            font-size: 14px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.7); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-overlay"></div>
+
+    <div class="container">
+        <div id="mainContent">
+            <div class="notice-tag">Promissory Note Series 2026</div>
+            <h1>PAUTANG 1K BAYARIN KO PAG MAYAMAN NA KO</h1>
+
+            <div class="terms-box">
+                <div class="term-row">
+                    <span class="term-label">Principal Amount:</span>
+                    <span class="term-val">PHP 1,000.00</span>
+                </div>
+                <div class="term-row">
+                    <span class="term-label">Interest Rate:</span>
+                    <span class="term-val">0.00% (Tiwala Lang)</span>
+                </div>
+                <div class="term-row">
+                    <span class="term-label">Maturity Date:</span>
+                    <span class="term-val">Pag Yumaman Na</span>
+                </div>
+                <div class="term-row">
+                    <span class="term-label">Collateral:</span>
+                    <span class="term-val">Friendship</span>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button id="yesBtn">GEGE</button>
+                <button id="noBtn">ANLALERZ</button>
+            </div>
+        </div>
+
+        <div id="blockedScreen" class="blocked-screen">
+            <div class="blocked-icon">!</div>
+            <div class="blocked-title">You Have Been Blocked</div>
+            <p class="blocked-desc">This user took the 1k and deactivated all communication channels.</p>
+            <div class="blocked-info">
+                <div class="blocked-row">
+                    <span class="blocked-label">Status:</span>
+                    <span>Blocked on all platforms</span>
+                </div>
+                <div class="blocked-row">
+                    <span class="blocked-label">Reason:</span>
+                    <span>1k loan successfully acquired</span>
+                </div>
+                <div class="blocked-row">
+                    <span class="blocked-label">Contact:</span>
+                    <span>Unreachable until rich</span>
+                </div>
+            </div>
+            <button class="disabled-btn" disabled>Unblock Request Denied</button>
+        </div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const mainContent = document.getElementById('mainContent');
+        const blockedScreen = document.getElementById('blockedScreen');
+
+        function dodge() {
+            if (noBtn.parentElement !== document.body) {
+                const rect = noBtn.getBoundingClientRect();
+                noBtn.style.position = 'fixed';
+                noBtn.style.left = rect.left + 'px';
+                noBtn.style.top = rect.top + 'px';
+                document.body.appendChild(noBtn);
+                noBtn.offsetHeight;
+            }
+
+            const btnWidth = noBtn.offsetWidth || 130;
+            const btnHeight = noBtn.offsetHeight || 50;
+            const padding = 30;
+
+            const maxX = Math.max(padding, window.innerWidth - btnWidth - padding);
+            const maxY = Math.max(padding, window.innerHeight - btnHeight - padding);
+
+            const newX = Math.floor(Math.random() * (maxX - padding)) + padding;
+            const newY = Math.floor(Math.random() * (maxY - padding)) + padding;
+
+            noBtn.style.left = newX + 'px';
+            noBtn.style.top = newY + 'px';
+        }
+
+        noBtn.addEventListener('mouseover', dodge);
+        noBtn.addEventListener('mouseenter', dodge);
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            dodge();
+        });
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            dodge();
+        });
+
+        yesBtn.addEventListener('click', () => {
+            document.body.classList.add('show-bg');
+            mainContent.style.display = 'none';
+            noBtn.style.display = 'none';
+            blockedScreen.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
